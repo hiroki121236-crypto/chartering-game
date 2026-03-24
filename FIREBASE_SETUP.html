@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Firebaseセットアップ手順 | ドライバルク チャータリング マルチプレイ</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f0;color:#1a1a1a;line-height:1.7}
+.header{background:#185FA5;color:#fff;padding:1.2rem 1.5rem}
+.header h1{font-size:18px;font-weight:700}
+.header p{font-size:12px;opacity:.85;margin-top:.25rem}
+.wrap{max-width:720px;margin:0 auto;padding:2rem 1.5rem}
+.step{background:#fff;border-radius:12px;border:0.5px solid rgba(0,0,0,.12);padding:1.4rem 1.5rem;margin-bottom:1.2rem;position:relative}
+.step-num{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:#185FA5;color:#fff;font-size:14px;font-weight:700;flex-shrink:0;margin-bottom:.65rem}
+.step h2{font-size:16px;font-weight:700;margin-bottom:.55rem;display:flex;align-items:center;gap:.6rem}
+.step p{font-size:13px;color:#333;margin-bottom:.65rem}
+.step p:last-child{margin-bottom:0}
+.step ul{font-size:13px;color:#333;padding-left:1.4rem;margin-bottom:.65rem}
+.step ul li{margin-bottom:.4rem}
+.step ol{font-size:13px;color:#333;padding-left:1.4rem;margin-bottom:.65rem}
+.step ol li{margin-bottom:.5rem}
+.code-block{background:#1a1a1a;color:#a8ff78;font-family:'Courier New',monospace;font-size:12px;border-radius:8px;padding:1rem 1.2rem;margin:.65rem 0;overflow-x:auto;line-height:1.7}
+.code-block .comment{color:#888}
+.code-block .key{color:#79c0ff}
+.code-block .val{color:#ffa657}
+.highlight{background:#E6F1FB;border-left:3px solid #185FA5;padding:.65rem .9rem;border-radius:0 7px 7px 0;font-size:12px;color:#0C447C;margin:.65rem 0}
+.warn{background:#FAEEDA;border-left:3px solid #EF9F27;padding:.65rem .9rem;border-radius:0 7px 7px 0;font-size:12px;color:#633806;margin:.65rem 0}
+.done-box{background:#E1F5EE;border-radius:10px;padding:1.2rem 1.5rem;text-align:center;margin-top:1.5rem}
+.done-box h2{font-size:18px;font-weight:700;color:#085041;margin-bottom:.4rem}
+.done-box p{font-size:13px;color:#27500A}
+.img-desc{background:#f1efe8;border-radius:7px;padding:.65rem .9rem;font-size:11px;color:#666;margin:.5rem 0;font-style:italic}
+kbd{background:#f1efe8;border:0.5px solid rgba(0,0,0,.2);border-radius:4px;padding:1px 6px;font-size:11px;font-family:inherit}
+footer{text-align:center;color:#888;font-size:11px;padding:1.5rem;margin-top:1rem}
+@media(max-width:480px){.wrap{padding:1.2rem 1rem}.step{padding:1rem 1.1rem}}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>🔥 Firebaseセットアップ手順書</h1>
+  <p>ドライバルク チャータリング — マルチプレイ版を動かすための設定ガイド（所要時間：約15〜20分）</p>
+</div>
+<div class="wrap">
+
+<div class="highlight">
+  <b>このガイドでやること：</b> GoogleのFirebaseというサービスに無料アカウントを作り、マルチプレイのデータを保存する「データベース」を作ります。プログラミングの知識は不要です。
+</div>
+
+<!-- STEP 1 -->
+<div class="step">
+  <h2><div class="step-num">1</div> Googleアカウントでサインイン</h2>
+  <p>Firebaseは Google が提供する無料サービスです。Gmailアカウントがあればすぐ使えます。</p>
+  <ol>
+    <li>ブラウザで <b>https://console.firebase.google.com</b> を開く</li>
+    <li>Googleアカウントでログインする（Gmailと同じアカウント）</li>
+    <li>Firebaseコンソールのトップページが表示されればOK</li>
+  </ol>
+  <div class="img-desc">🖼️ 画面上部に「Firebaseへようこそ」のような文字が表示されるはずです</div>
+</div>
+
+<!-- STEP 2 -->
+<div class="step">
+  <h2><div class="step-num">2</div> 新しいプロジェクトを作成</h2>
+  <ol>
+    <li>「プロジェクトを作成」（または「＋ プロジェクトを追加」）をクリック</li>
+    <li>プロジェクト名を入力（例：<b>chartering-game</b>）— 半角英数字・ハイフンのみ</li>
+    <li>「続行」をクリック</li>
+    <li>「このプロジェクトでGoogle アナリティクスを有効にする」は <b>オフ</b> でOK（チェックを外す）</li>
+    <li>「プロジェクトを作成」をクリック</li>
+    <li>しばらく待つと「新しいプロジェクトの準備ができました」と表示 → 「続行」</li>
+  </ol>
+  <div class="img-desc">🖼️ プロジェクト名は後で変更できます。自分がわかればなんでもOKです</div>
+</div>
+
+<!-- STEP 3 -->
+<div class="step">
+  <h2><div class="step-num">3</div> Realtime Database を作成</h2>
+  <p>マルチプレイのデータ（ルーム情報・市場データ・プレイヤー情報）を保存するデータベースを作ります。</p>
+  <ol>
+    <li>左サイドバーの「構築」→「<b>Realtime Database</b>」をクリック</li>
+    <li>「データベースを作成」をクリック</li>
+    <li>ロケーション選択：<b>「asia-southeast1（シンガポール）」</b> を選ぶ（日本から近くて速い）</li>
+    <li>「次へ」をクリック</li>
+    <li>セキュリティルール：<b>「テストモードで開始」</b> を選択</li>
+    <li>「有効にする」をクリック</li>
+  </ol>
+  <div class="warn">
+    ⚠️ <b>テストモードについて：</b> テストモードは「誰でも読み書き可能」な設定です。友達と遊ぶ分には問題ありませんが、30日後にルールが自動的に変わります。本格的に公開する場合は後でルールを設定してください。
+  </div>
+</div>
+
+<!-- STEP 4 -->
+<div class="step">
+  <h2><div class="step-num">4</div> アプリを登録してAPIキーを取得</h2>
+  <p>ゲームのHTMLファイルがFirebaseに接続するための「鍵（APIキー）」を取得します。</p>
+  <ol>
+    <li>プロジェクトの概要ページに戻る（左上のプロジェクト名をクリック）</li>
+    <li>「アプリを追加」の下にある <b>「&lt;/&gt;」（ウェブ）アイコン</b> をクリック</li>
+    <li>アプリのニックネームを入力（例：<b>chartering-web</b>）</li>
+    <li>「Firebase Hosting も設定する」は <b>チェックしない</b></li>
+    <li>「アプリを登録」をクリック</li>
+    <li>以下のようなコードが表示される — <b>この設定値をすべてコピーしておく</b></li>
+  </ol>
+  <div class="code-block">
+<span class="comment">// コピーする設定値（値は例です。あなたの画面に表示される実際の値を使ってください）</span>
+const firebaseConfig = {
+  <span class="key">apiKey</span>: <span class="val">"AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"</span>,
+  <span class="key">authDomain</span>: <span class="val">"chartering-game-xxxxx.firebaseapp.com"</span>,
+  <span class="key">databaseURL</span>: <span class="val">"https://chartering-game-xxxxx-default-rtdb.asia-southeast1.firebasedatabase.app"</span>,
+  <span class="key">projectId</span>: <span class="val">"chartering-game-xxxxx"</span>,
+  <span class="key">storageBucket</span>: <span class="val">"chartering-game-xxxxx.appspot.com"</span>,
+  <span class="key">messagingSenderId</span>: <span class="val">"123456789012"</span>,
+  <span class="key">appId</span>: <span class="val">"1:123456789012:web:abcdef1234567890"</span>
+};
+  </div>
+  <div class="highlight">
+    💡 <b>コピーのコツ：</b>「コピー」ボタン（または <kbd>Ctrl+A</kbd> → <kbd>Ctrl+C</kbd>）でコード全体をコピーし、メモ帳などに一時保存しておくと便利です。
+  </div>
+</div>
+
+<!-- STEP 5 -->
+<div class="step">
+  <h2><div class="step-num">5</div> multiplayer.html に設定を貼り付け</h2>
+  <p>コピーした設定を <code>multiplayer.html</code> ファイルに貼り付けます。</p>
+  <ol>
+    <li>テキストエディタ（メモ帳、VSCode など）で <b>multiplayer.html</b> を開く</li>
+    <li>ファイルの先頭付近に以下のような箇所を探す：</li>
+  </ol>
+  <div class="code-block">
+<span class="comment">// ▼▼▼ Firebase コンソールからコピーした設定を貼り付け ▼▼▼</span>
+const firebaseConfig = {
+  <span class="key">apiKey</span>: <span class="val">"YOUR_API_KEY"</span>,
+  <span class="key">authDomain</span>: <span class="val">"YOUR_PROJECT_ID.firebaseapp.com"</span>,
+  <span class="key">databaseURL</span>: <span class="val">"https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com"</span>,
+  <span class="key">projectId</span>: <span class="val">"YOUR_PROJECT_ID"</span>,
+  <span class="key">storageBucket</span>: <span class="val">"YOUR_PROJECT_ID.appspot.com"</span>,
+  <span class="key">messagingSenderId</span>: <span class="val">"YOUR_SENDER_ID"</span>,
+  <span class="key">appId</span>: <span class="val">"YOUR_APP_ID"</span>
+};
+<span class="comment">// ▲▲▲ ここまで ▲▲▲</span>
+  </div>
+  <ol start="3">
+    <li><code>YOUR_API_KEY</code> などの <b>YOUR_〜 の部分を、Firebaseからコピーした実際の値に置き換える</b></li>
+    <li>ファイルを保存する（<kbd>Ctrl+S</kbd>）</li>
+  </ol>
+  <div class="warn">
+    ⚠️ <b>注意：</b> databaseURL の値が特に重要です。Realtime Databaseを「asia-southeast1」で作った場合、URLに <code>asia-southeast1.firebasedatabase.app</code> が含まれます。コンソールに表示された値をそのままコピーしてください。
+  </div>
+</div>
+
+<!-- STEP 6 -->
+<div class="step">
+  <h2><div class="step-num">6</div> GitHub Pages にアップロードして完成</h2>
+  <p>設定済みの <code>multiplayer.html</code> をウェブ上に公開します。</p>
+  <ol>
+    <li>既存の <b>chartering-game</b> リポジトリ（ソロプレイ版）を GitHub で開く</li>
+    <li>「Add file」→「Upload files」をクリック</li>
+    <li>設定済みの <code>multiplayer.html</code> をドラッグ＆ドロップ</li>
+    <li>「Commit changes」をクリック</li>
+    <li>数分後に以下のURLでアクセス可能：</li>
+  </ol>
+  <div class="code-block">
+https://あなたのユーザー名.github.io/chartering-game/multiplayer.html
+  </div>
+  <div class="highlight">
+    💡 このURLを友達に共有すれば、マルチプレイが楽しめます！ソロプレイ版（index.html）とは別ファイルなので、両方そのまま使えます。
+  </div>
+</div>
+
+<!-- 動作確認 -->
+<div class="step">
+  <h2><div class="step-num">✓</div> 動作確認</h2>
+  <ol>
+    <li>URLをブラウザで開く → ロビー画面が表示される</li>
+    <li>プレイヤー名を入力 → 「新しいルームを作る」をクリック</li>
+    <li>4文字のルームコードが表示される</li>
+    <li>別のデバイスやブラウザで同じURLを開き、ルームコードを入力して入室</li>
+    <li>ホストが「ゲームスタート」を押すと全員同時開始</li>
+  </ol>
+  <div class="img-desc">🖼️ うまくいかない場合：ブラウザのコンソール（F12キー）でエラーメッセージを確認してください</div>
+</div>
+
+<!-- よくあるトラブル -->
+<div class="step">
+  <h2><div class="step-num">❓</div> よくあるトラブルと対処法</h2>
+  <ul>
+    <li><b>「ルームが見つかりません」と出る：</b> ルームコードが正しいか確認。大文字・小文字は自動変換されます。</li>
+    <li><b>ゲームが始まらない：</b> Firebase コンソールの Realtime Database で「データ」タブに rooms/ のデータが増えているか確認。増えていなければAPIキーが誤っています。</li>
+    <li><b>「PERMISSION_DENIED」エラー：</b> テストモードの30日期限が切れた可能性があります。Firebase コンソール → Realtime Database → ルール → 以下に変更して「公開」:</li>
+  </ul>
+  <div class="code-block">
+{
+  "rules": {
+    ".read": true,
+    ".write": true
+  }
+}
+  </div>
+  <ul>
+    <li><b>画面が更新されない：</b> ブラウザをハードリロード（<kbd>Ctrl+Shift+R</kbd> または <kbd>Cmd+Shift+R</kbd>）してください。</li>
+  </ul>
+</div>
+
+<div class="done-box">
+  <h2>🎉 セットアップ完了！</h2>
+  <p>友達とリアルタイムでドライバルク チャータリングをプレイできます。<br>同じ市場を奪い合う白熱のゲームをお楽しみください！</p>
+</div>
+
+</div>
+<footer>ドライバルク チャータリング — マルチプレイ版 Firebaseセットアップガイド</footer>
+</body>
+</html>
