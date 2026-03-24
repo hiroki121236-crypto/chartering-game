@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ドライバルク チャータリング | 海運業経営シミュレーション</title>
+<meta name="description" content="ドライバルク海運のスポット用船ビジネスを体験できる無料ブラウザゲーム。PC・スマートフォン・iPad対応。">
+<meta property="og:title" content="ドライバルク チャータリング">
+<meta property="og:description" content="海運業のスポット用船ビジネスを体験する経営シミュレーションゲーム。無料でプレイ。">
+<meta property="og:type" content="website">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1a1a1a;background:#f5f5f0;min-height:100vh}
+/* ランディングページ */
+.lp-hero{background:linear-gradient(135deg,#0C447C 0%,#185FA5 50%,#1D9E75 100%);color:#fff;padding:3rem 1.5rem 2.5rem;text-align:center}
+.lp-title{font-size:clamp(22px,5vw,36px);font-weight:700;margin-bottom:.5rem;letter-spacing:-.01em}
+.lp-sub{font-size:clamp(12px,2.5vw,15px);opacity:.85;margin-bottom:2rem;line-height:1.6}
+.lp-btn{display:inline-block;background:#fff;color:#185FA5;font-size:clamp(14px,3vw,17px);font-weight:700;padding:.9rem 2.5rem;border-radius:50px;text-decoration:none;border:none;cursor:pointer;transition:transform .12s,box-shadow .12s;box-shadow:0 4px 20px rgba(0,0,0,.2)}
+.lp-btn:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(0,0,0,.28)}
+.lp-btn:active{transform:translateY(0)}
+.lp-badges{display:flex;justify-content:center;gap:.75rem;margin-top:1.2rem;flex-wrap:wrap}
+.lp-badge{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:99px;font-size:11px;padding:.28rem .7rem;color:#fff}
+.wrap{max-width:860px;margin:0 auto;padding:0 1.2rem}
+.section{padding:2.5rem 0}
+.section-title{font-size:clamp(16px,3.5vw,22px);font-weight:700;margin-bottom:1.2rem;text-align:center}
+.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:2rem}
+.feat{background:#fff;border-radius:12px;padding:1.1rem 1rem;border:0.5px solid rgba(0,0,0,.1);text-align:center}
+.feat-icon{font-size:26px;margin-bottom:.5rem}
+.feat-title{font-size:13px;font-weight:600;margin-bottom:.3rem}
+.feat-desc{font-size:11px;color:#666;line-height:1.6}
+.ships{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:2rem}
+.ship-card{border-radius:10px;padding:.85rem .75rem;font-size:11px}
+.ship-card b{display:block;font-size:12px;margin-bottom:3px}
+.how{display:flex;flex-direction:column;gap:.85rem}
+.how-step{display:flex;gap:.85rem;align-items:flex-start;background:#fff;border-radius:10px;padding:.85rem;border:0.5px solid rgba(0,0,0,.1)}
+.how-num{width:28px;height:28px;border-radius:50%;background:#185FA5;color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.how-text{font-size:12px;line-height:1.65}
+.how-text b{font-size:13px;display:block;margin-bottom:2px}
+.cta-section{background:#185FA5;color:#fff;padding:2.5rem 1.5rem;text-align:center}
+.cta-title{font-size:clamp(16px,3.5vw,22px);font-weight:700;margin-bottom:.5rem}
+.cta-sub{font-size:13px;opacity:.85;margin-bottom:1.5rem}
+.cta-btn{display:inline-block;background:#fff;color:#185FA5;font-size:15px;font-weight:700;padding:.85rem 2.2rem;border-radius:50px;text-decoration:none;border:none;cursor:pointer}
+footer{background:#1a1a1a;color:#aaa;padding:1.5rem;text-align:center;font-size:11px}
+footer a{color:#ccc;text-decoration:none;margin:0 .5rem}
+footer a:hover{color:#fff}
+@media(max-width:480px){
+  .ships{grid-template-columns:1fr;gap:.5rem}
+  .lp-hero{padding:2.5rem 1rem 2rem}
+}
+</style>
+</head>
+<body>
+
+<!-- ヒーロー -->
+<div class="lp-hero">
+  <div class="lp-title">🚢 ドライバルク チャータリング</div>
+  <div class="lp-sub">海運業のスポット用船ビジネスを体験する<br>本格派ブラウザ経営シミュレーション</div>
+  <button class="lp-btn" onclick="startPlay()">今すぐプレイ（無料）</button>
+  <div class="lp-badges">
+    <span class="lp-badge">✓ 無料</span>
+    <span class="lp-badge">✓ インストール不要</span>
+    <span class="lp-badge">✓ PC・スマホ・iPad対応</span>
+    <span class="lp-badge">✓ 5〜10分でプレイ可</span>
+  </div>
+</div>
+
+<!-- ゲーム画面（最初は非表示） -->
+<div id="game-area" style="display:none"></div>
+
+<!-- ランディングページコンテンツ -->
+<div id="lp-content">
+  <div class="wrap">
+
+    <!-- 特徴 -->
+    <div class="section">
+      <div class="section-title">このゲームの特徴</div>
+      <div class="features">
+        <div class="feat"><div class="feat-icon">⚖️</div><div class="feat-title">リアルな用船交渉</div><div class="feat-desc">船主と用船料を交渉。提示額が低すぎると拒否される本格システム</div></div>
+        <div class="feat"><div class="feat-icon">📊</div><div class="feat-title">BDI市況変動</div><div class="feat-desc">バルチック指数が動的に変動し、燃料価格やイベントが収益に影響</div></div>
+        <div class="feat"><div class="feat-icon">🏁</div><div class="feat-title">競合との争奪戦</div><div class="feat-desc">3分後から競合他社がカーゴ・船を奪い始める。5分でラウンド終了</div></div>
+        <div class="feat"><div class="feat-icon">📅</div><div class="feat-title">laycanシステム</div><div class="feat-desc">貨物ごとに受入期間あり。間に合う船だけが積載できる</div></div>
+        <div class="feat"><div class="feat-icon">🔒</div><div class="feat-title">長期用船戦略</div><div class="feat-desc">市況上昇前に長期契約しておくと有利。先読みが重要</div></div>
+        <div class="feat"><div class="feat-icon">⚠️</div><div class="feat-title">ブローカートラップ</div><div class="feat-desc">一部の船はブローカーが用船料を上乗せ。見極めが必要</div></div>
+      </div>
+    </div>
+
+    <!-- 船種 -->
+    <div class="section" style="padding-top:0">
+      <div class="section-title">3種類の船</div>
+      <div class="ships">
+        <div class="ship-card" style="background:#E6F1FB;color:#0C447C"><b>Handysize（32k DWT）</b>用船料・燃料費が低い。石炭・小口穀物向け</div>
+        <div class="ship-card" style="background:#E1F5EE;color:#085041"><b>Supramax（56k DWT）</b>バランス型。穀物・大豆・石炭に幅広く対応</div>
+        <div class="ship-card" style="background:#FAEEDA;color:#412402"><b>Panamax（75k DWT）</b>大型カーゴ向け。鉄鉱石・大豆の大口輸送</div>
+      </div>
+    </div>
+
+    <!-- 遊び方 -->
+    <div class="section" style="padding-top:0">
+      <div class="section-title">遊び方</div>
+      <div class="how">
+        <div class="how-step"><div class="how-num">1</div><div class="how-text"><b>用船市場で船をチャーター</b>船主の提示額に対して回答額を提示。長期契約ほど市況リスクをヘッジできる</div></div>
+        <div class="how-step"><div class="how-num">2</div><div class="how-text"><b>カーゴ市場で貨物を取る</b>laycan（積み日程）に間に合う船でカーゴを取り、荷主と運賃を交渉する</div></div>
+        <div class="how-step"><div class="how-num">3</div><div class="how-text"><b>揚げ地到着後に次の貨物を積む</b>1隻1カーゴが原則。到着後に再び空になって次の貨物を積める</div></div>
+        <div class="how-step"><div class="how-num">4</div><div class="how-text"><b>全6ラウンドで利益最大化</b>競合より早く、採算の合う案件を成立させよう。$40M超でSランク達成！</div></div>
+      </div>
+    </div>
+
+  </div><!-- /wrap -->
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <div class="cta-title">さっそくプレイしてみよう</div>
+    <div class="cta-sub">インストール不要・無料・登録なし</div>
+    <button class="cta-btn" onclick="startPlay()">ゲームスタート →</button>
+  </div>
+
+  <footer>
+    <div style="margin-bottom:.5rem">
+      <a href="privacy.html">プライバシーポリシー</a>
+      <a href="terms.html">利用規約</a>
+    </div>
+    <div>© 2025 ドライバルク チャータリング. All rights reserved.</div>
+    <div style="margin-top:.4rem;font-size:10px;opacity:.7">このゲームは教育・エンターテインメント目的で作成されています。実際のビジネスや投資判断の参考にはなりません。</div>
+  </footer>
+
+</div><!-- /lp-content -->
+
+<script>
+function startPlay(){
+  document.getElementById('lp-content').style.display='none';
+  document.getElementById('game-area').style.display='';
+  document.getElementById('game-area').innerHTML='<iframe src="game.html" style="width:100%;height:100vh;border:none;display:block" allow="autoplay"></iframe>';
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>

@@ -1,37 +1,37 @@
-# ドライバルク チャータリング — マルチプレイ版
+# ドライバルク チャータリング
 
-Firebase Realtime Database を使ったリアルタイムマルチプレイ対応版です。
+海運業のスポット用船ビジネスを体験する無料ブラウザ経営シミュレーション
 
-## ファイル構成
+## 🎮 プレイ
 
-| ファイル | 説明 |
-|---|---|
-| `multiplayer.html` | マルチプレイゲーム本体（Firebase設定が必要） |
-| `FIREBASE_SETUP.html` | Firebaseセットアップ手順書（ブラウザで開いて読む） |
-| `README.md` | このファイル |
+サイトURL（GitHub Pages設定後に更新してください）:  
+`https://あなたのユーザー名.github.io/chartering-game/`
 
-## 始め方
+## 📁 ファイル構成
 
-1. `FIREBASE_SETUP.html` をブラウザで開いて手順に従う（約15〜20分）
-2. `multiplayer.html` にFirebaseの設定を貼り付ける
-3. GitHub Pages にアップロード
-4. URLを友達に共有してプレイ
+```
+index.html    - ランディングページ
+game.html     - ゲーム本体（スマホ・PC対応）
+privacy.html  - プライバシーポリシー
+terms.html    - 利用規約
+README.md     - このファイル
+```
 
-## マルチプレイの仕様
+## 🚀 GitHub Pagesへのデプロイ手順
 
-- **ルームコード制** — 4文字のコードを共有して入室
-- **最大6人** — 同じルームで対戦
-- **共有市場** — 全員で同じ用船市場・カーゴ市場を奪い合う
-- **リアルタイム** — 他プレイヤーの成約が即座に反映される
-- **順位表** — 全6ラウンド終了後に全員の利益を比較
+1. GitHubアカウントを作成（https://github.com）
+2. 新しいリポジトリを作成（例: `chartering-game`）、**Public**に設定
+3. このフォルダの全ファイルをアップロード
+4. Settings → Pages → Branch: main / folder: / (root) → Save
+5. 数分後に `https://ユーザー名.github.io/chartering-game/` でアクセス可能
 
-## 必要なもの
+## 📱 対応環境
 
-- Google アカウント（Gmail）
-- Firebase プロジェクト（無料）
-- GitHub Pages（または他の静的ホスティング）
+- PC（Chrome / Firefox / Safari / Edge）
+- iPhone / Android（Safari / Chrome）
+- iPad
 
-## ソロプレイ版について
+## ライセンス
 
-ソロプレイ版は `chartering-site.zip` に含まれる `game.html` です。
-マルチプレイ版とは別ファイルなので、両方を同じリポジトリに置けます。
+個人利用・教育目的は自由にご利用ください。
+商用利用の際はご連絡ください。
