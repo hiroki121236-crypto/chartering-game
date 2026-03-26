@@ -787,4 +787,41 @@ function fmt(v){var a=Math.abs(v),s=v<0?'-':'+';if(a>=1e6)return s+'$'+(a/1e6).t
   </div>
 </div>
 </body>
-</html>
+</html>function rollEvent(){
+  // マルチは難易度なし・全員共通のイベント
+  // 上昇/下落/無変化の確率: none=28% up-normal=22% up-big=8% down-normal=30% down-big=12%
+  var weights=[28,22,8,30,12];
+  var total=weights.reduce(function(a,b){return a+b;},0);
+  var r=Math.random()*total,cum=0,category=0;
+  for(var i=0;i<weights.length;i++){cum+=weights[i];if(r<cum){category=i;break;}}
+
+  if(category===0){
+    S.lastEvent={type:'none',mag:'normal',title:'',desc:''};
+    S.fuelPrice=Math.max(300,Math.min(1400,S.fuelPrice+Math.round((Math.random()-0.5)*50)));
+    return;
+  }
+  var isUp=category<=2,isBig=category===2||category===4;
+  var pool=EVENTS.filter(function(e){return e.type===(isUp?'up':'down')&&e.mag===(isBig?'big':'normal');});
+  if(!pool.length)pool=EVENTS.filter(function(e){return e.type===(isUp?'up':'down');});
+  var ev=pool[Math.floor(Math.random()*pool.length)];
+  S.lastEvent=ev;
+
+  var baseMag=isBig?Math.round(500+Math.random()*900):Math.round(150+Math.random()*300);
+  var mktUp=isBig?1.28:1.09,mktDown=isBig?0.70:0.92;
+
+  if(isUp){
+    S.bdi=Math.min(5500,S.bdi+baseMag);
+    for(var i=0;i<S.mktShips.length;i++)
+      if(!S.mktShips[i].booked)S.mktShips[i].ownerRate=Math.round(S.mktShips[i].ownerRate*mktUp/500)*500;
+    var fc=ev.fuelDelta||Math.round((Math.random()-0.2)*90);
+    S.fuelPrice=Math.max(300,Math.min(1500,S.fuelPrice+fc));
+    if(isBig)addLog('📈 長期用船していた船は現在の市場より安い用船料でキープできています！');
+  } else {
+    S.bdi=Math.max(150,S.bdi-baseMag);
+    for(var i=0;i<S.mktShips.length;i++)
+      if(!S.mktShips[i].booked)S.mktShips[i].ownerRate=Math.max(1800,Math.round(S.mktShips[i].ownerRate*mktDown/500)*500);
+    var fc2=ev.fuelDelta||Math.round((Math.random()-0.4)*80);
+    S.fuelPrice=Math.max(250,Math.min(1500,S.fuelPrice+fc2));
+    if(isBig)addLog('📉 短期用船なら今すぐ安い用船料で再チャーターできます。長期契約していた場合は解約不可。');
+  }
+}

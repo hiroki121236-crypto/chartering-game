@@ -113,57 +113,38 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1
     <div style="font-size:12px;color:#888">海運業のスポット用船ビジネス 経営シミュレーション</div>
   </div>
 
-  <div class="card" style="margin-bottom:.65rem">
-    <div style="font-size:13px;font-weight:600;margin-bottom:.7rem">ゲームの流れ</div>
-    <div class="rule-step"><div class="rule-num">1</div><div><div class="rule-text"><b>用船市場</b>で船をチャーターする</div><div class="rule-sub">船主と用船料を交渉。長期契約ほど市況上昇リスクをヘッジ</div></div></div>
+</div>
     <div class="rule-step"><div class="rule-num">2</div><div><div class="rule-text"><b>カーゴ市場</b>でカーゴを取る</div><div class="rule-sub">荷主と運賃を交渉。laycan（積み日程）に間に合う船だけ選べる</div></div></div>
     <div class="rule-step"><div class="rule-num">3</div><div><div class="rule-text">揚げ地到着後に<b>次のカーゴ</b>を積む</div><div class="rule-sub">1隻1カーゴ。到着後に次の貨物を積める</div></div></div>
     <div class="rule-step" style="margin-bottom:0"><div class="rule-num">4</div><div><div class="rule-text"><b>全6ラウンド</b>で利益を最大化</div><div class="rule-sub">1ラウンド＝約1ヶ月。毎ラウンド用船料が引かれる</div></div></div>
   </div>
 
-  <div class="tip-box">
-    <div class="tip-box-title">💡 コスト構造</div>
-    <div class="tip-row"><span>用船料</span>用船した日数 × 日額</div>
-    <div class="tip-row"><span>燃料費</span>船型 × 航海日数 × 燃料単価</div>
+<div class="tip-row"><span>燃料費</span>船型 × 航海日数 × 燃料単価</div>
     <div class="tip-row"><span>収入</span>運賃($/t) × 積載量</div>
     <div class="tip-row" style="margin-bottom:0"><span>利益</span>収入 − 用船料 − 燃料費</div>
   </div>
 
-  <div class="tip-box">
-    <div class="tip-box-title">⚠️ 注意事項</div>
-    <div class="tip-row"><span>タイマー</span>各ラウンド5分。競合他社が時間とともにカーゴ・船を奪う</div>
-    <div class="tip-row"><span>ブローカー</span>⚠マーク付きの船は用船料が上乗せされている可能性あり</div>
+<div class="tip-row"><span>ブローカー</span>⚠マーク付きの船は用船料が上乗せされている可能性あり</div>
     <div class="tip-row"><span>laycan</span>積み地の受入期間。期間内に到着できない船は使えない</div>
     <div class="tip-row" style="margin-bottom:0"><span>長期用船</span>市況上昇時に早期契約が有利</div>
   </div>
 
-  <div class="card" style="margin-bottom:1rem">
-    <div style="font-size:12px;font-weight:600;margin-bottom:.5rem">船種と特徴</div>
-    <div style="display:flex;flex-direction:column;gap:6px">
-      <div style="font-size:10px;padding:.4rem .55rem;border-radius:7px;background:#E6F1FB;color:#0C447C"><b>Handysize（32k DWT）</b> — 用船料低・燃料少。石炭・穀物（小口）</div>
-      <div style="font-size:10px;padding:.4rem .55rem;border-radius:7px;background:#E1F5EE;color:#085041"><b>Supramax（56k DWT）</b> — 用船料中・燃料中。穀物・大豆・石炭に対応</div>
-      <div style="font-size:10px;padding:.4rem .55rem;border-radius:7px;background:#FAEEDA;color:#412402"><b>Panamax（75k DWT）</b> — 用船料高・燃料多。鉄鉱石・大豆（大口）</div>
-    </div>
-  </div>
+</div>
 
   <!-- 難易度選択 -->
   <div class="card" style="margin-bottom:1rem">
     <div style="font-size:13px;font-weight:600;margin-bottom:.55rem">難易度を選ぶ</div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px" id="diff-selector">
-      <div onclick="APP.setDiff('easy')" id="diff-easy" style="border:2px solid #1D9E75;border-radius:9px;padding:.55rem .5rem;text-align:center;cursor:pointer;background:#E1F5EE">
-        <div style="font-size:13px;font-weight:600;color:#085041;margin-bottom:2px">🟢 かんたん</div>
-        <div style="font-size:10px;color:#0F6E56">競合が遅い<br>カーゴ多め<br>初心者向け</div>
+      <div onclick="APP.setDiff('normal')" id="diff-normal" style="border:2px solid #185FA5;border-radius:9px;padding:.65rem .5rem;text-align:center;cursor:pointer;background:#E6F1FB">
+        <div style="font-size:15px;font-weight:700;color:#0C447C">🔵 ふつう</div>
       </div>
-      <div onclick="APP.setDiff('normal')" id="diff-normal" style="border:2px solid #185FA5;border-radius:9px;padding:.55rem .5rem;text-align:center;cursor:pointer;background:#E6F1FB">
-        <div style="font-size:13px;font-weight:600;color:#0C447C;margin-bottom:2px">🔵 ふつう</div>
-        <div style="font-size:10px;color:#185FA5">標準設定<br>バランス型<br>おすすめ</div>
+      <div onclick="APP.setDiff('hard')" id="diff-hard" style="border:1.5px solid rgba(0,0,0,.12);border-radius:9px;padding:.65rem .5rem;text-align:center;cursor:pointer;background:#f1efe8">
+        <div style="font-size:15px;font-weight:700;color:#791F1F">🔴 むずかしい</div>
       </div>
-      <div onclick="APP.setDiff('hard')" id="diff-hard" style="border:1.5px solid rgba(0,0,0,.12);border-radius:9px;padding:.55rem .5rem;text-align:center;cursor:pointer;background:#f1efe8">
-        <div style="font-size:13px;font-weight:600;color:#791F1F;margin-bottom:2px">🔴 むずかしい</div>
-        <div style="font-size:10px;color:#A32D2D">競合が激しい<br>カーゴ少なめ<br>上級者向け</div>
+      <div onclick="APP.setDiff('extreme')" id="diff-extreme" style="border:1.5px solid rgba(0,0,0,.12);border-radius:9px;padding:.65rem .5rem;text-align:center;cursor:pointer;background:#f1efe8">
+        <div style="font-size:15px;font-weight:700;color:#412402">💀 激むず</div>
       </div>
     </div>
-    <div id="diff-desc" style="margin-top:.5rem;font-size:11px;color:#888;text-align:center">難易度「ふつう」が選択されています</div>
   </div>
 
   <div style="text-align:center;margin-bottom:.5rem">
@@ -171,21 +152,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1
   </div>
   <div style="text-align:center;margin-bottom:.75rem"><button onclick="APP.startTutorial()" class="btn" style="font-size:12px;color:#185FA5;border-color:#185FA5;width:100%;max-width:280px">📖 チュートリアルを見る（初めての方）</button></div>
 
-  <div style="text-align:center">
-    <button onclick="var r=document.getElementById('full-rules');r.style.display=r.style.display==='none'?'block':'none'" class="btn" style="font-size:11px;color:#888;width:100%">詳細ルールを読む ▾</button>
-    <div id="full-rules" style="display:none">
-      <div class="rules-panel" style="text-align:left;margin-top:.5rem">
-        <b style="display:block;margin-bottom:.4rem;color:#1a1a1a">操作の流れ</b>
-        <b style="color:#185FA5">① 用船市場</b>タブ → 船を選ぶ → <b style="color:#185FA5">用船交渉</b>タブで期間・用船料を設定 → 「用船成立」で即確定<br><br>
-        <b style="color:#1D9E75">② 用船中の船</b>タブで空きスロットをタップ → <b style="color:#1D9E75">カーゴ市場</b>でカーゴを選ぶ → <b style="color:#1D9E75">カーゴ交渉</b>タブで運賃を設定 → 「運賃確定」で即確定<br><br>
-        <b style="color:#1a1a1a">③ 揚げ地到着後（次R以降）に再びカーゴを積める</b><br><br>
-        <b style="color:#E24B4A">⚠ タイマー</b> 5分でラウンド強制終了。競合は3分頃から動き始める<br>
-        <b style="color:#E24B4A">⚠ ブローカー</b> ⚠マーク付きの船は用船料が上乗せされている可能性あり<br>
-        <b style="color:#534AB7">⚠ laycan</b> 船が積み地に到着できる期間。期間外は積載不可<br><br>
-        <b style="color:#1a1a1a">評価：</b> S（$40M以上）A（$20M以上）B（黒字）C（〜-$10M）D（それ以下）
-      </div>
-    </div>
-  </div>
+</div>
 </div>
 
 <!-- ===== ゲーム画面 ===== -->
@@ -611,20 +578,20 @@ function addDone(m){S.doneList.unshift(m);if(S.doneList.length>20)S.doneList.pop
 function buildSched(){
   var sc=[];
   var d=S.difficulty;
-  // カーゴ奪取スケジュール（難易度で調整）
-  var cargoStart = d==='easy'?90:d==='hard'?160:148;
-  var cargoProb1 = d==='easy'?0.15:d==='hard'?0.40:0.28;
-  var cargoProb2 = d==='easy'?0.40:d==='hard'?0.85:0.68;
-  var cargoProb3 = d==='easy'?0.60:d==='hard'?0.95:0.82;
-  for(var t=cargoStart;t>=20;t-=18)if(Math.random()<cargoProb1)sc.push({at:t,type:'cargo',n:1});
-  for(var t=116;t>=60;t-=12)if(Math.random()<cargoProb2)sc.push({at:t,type:'cargo',n:1});
-  for(var t=56;t>=30;t-=8)if(Math.random()<cargoProb3)sc.push({at:t,type:'cargo',n:Math.random()<(d==='hard'?0.6:0.35)?2:1});
-  for(var t=28;t>=5;t-=4)sc.push({at:t,type:'cargo',n:d==='easy'?1:Math.random()<0.5?2:1});
+  // ふつう: 標準。むずかしい: 序盤から競合が動く。激むず: 開始直後から全力で奪う
+  var cargoStart = d==='extreme'?250:d==='hard'?200:148;
+  var cargoProb1 = d==='extreme'?0.80:d==='hard'?0.55:0.28;
+  var cargoProb2 = d==='extreme'?0.98:d==='hard'?0.88:0.68;
+  var cargoProb3 = d==='extreme'?1.00:d==='hard'?0.95:0.82;
+  for(var t=cargoStart;t>=20;t-=18)if(Math.random()<cargoProb1)sc.push({at:t,type:'cargo',n:d==='extreme'?2:1});
+  for(var t=116;t>=60;t-=12)if(Math.random()<cargoProb2)sc.push({at:t,type:'cargo',n:d==='extreme'?2:1});
+  for(var t=56;t>=30;t-=8)if(Math.random()<cargoProb3)sc.push({at:t,type:'cargo',n:d==='extreme'?3:d==='hard'?2:1});
+  for(var t=28;t>=5;t-=4)sc.push({at:t,type:'cargo',n:d==='extreme'?3:d==='hard'?2:1});
   // 用船市場奪取
-  var shipStart = d==='easy'?60:d==='hard'?150:120;
-  var shipProb = d==='easy'?0.25:d==='hard'?0.65:0.45;
+  var shipStart = d==='extreme'?280:d==='hard'?200:120;
+  var shipProb  = d==='extreme'?0.90:d==='hard'?0.70:0.45;
   for(var t=shipStart;t>=40;t-=20)if(Math.random()<shipProb)sc.push({at:t,type:'ship',n:1});
-  for(var t=38;t>=10;t-=12)if(Math.random()<(d==='easy'?0.35:d==='hard'?0.85:0.65))sc.push({at:t,type:'ship',n:1});
+  for(var t=38;t>=10;t-=12)if(Math.random()<(d==='extreme'?0.98:d==='hard'?0.85:0.65))sc.push({at:t,type:'ship',n:d==='extreme'?2:1});
   return sc;
 }
 function startTimer(){S.timerSec=300;S.timerActive=true;S.rivalSchedule=buildSched();S.rivalLog=[];updateTimerUI();S.timerHandle=setInterval(function(){if(!S.timerActive)return;S.timerSec--;updateTimerUI();var sc=S.rivalSchedule;for(var i=sc.length-1;i>=0;i--){if(S.timerSec<=sc[i].at){if(sc[i].type==='cargo')rivalStealCargo(sc[i].n);else rivalStealShip(sc[i].n);sc.splice(i,1);}}if(S.timerSec<=0){S.timerActive=false;clearInterval(S.timerHandle);addLog('⏰ 5分経過 — 強制終了');APP.nextRound();}},1000);}
@@ -634,7 +601,7 @@ function rivalStealShip(n){var avail=[];for(var i=0;i<S.mktShips.length;i++){var
 function genMktShips(){S.mktShips=[];var n=5+Math.floor(Math.random()*2),used=[];for(var i=0;i<n;i++){var ni=Math.floor(Math.random()*MKT_NAMES.length);while(used.indexOf(ni)>=0)ni=Math.floor(Math.random()*MKT_NAMES.length);used.push(ni);var ti=Math.floor(Math.random()*3),pos=PORT_KEYS[Math.floor(Math.random()*PORT_KEYS.length)];var trueRate=Math.round((STYPES[ti].fuelTDay*30*S.fuelPrice*(0.8+Math.random()*.5)/30+3000)/500)*500;var isBroker=Math.random()<0.20;var ownerRate=isBroker?Math.round(trueRate*(1.05+Math.random()*.10)/500)*500:trueRate;S.mktShips.push({id:S.nextId++,name:MKT_NAMES[ni],ti:ti,pos:pos,trueOwnerRate:trueRate,ownerRate:ownerRate,isBroker:isBroker,booked:false,rivalBooked:false,colorIdx:S.nextCol++});}}
 function genCargoes(){
   var pool=[];for(var i=0;i<CTPL.length;i++)pool.push(i);pool.sort(function(){return Math.random()-.5;});
-  S.cargoes=[];var num=6+Math.floor(Math.random()*3);
+  S.cargoes=[];var numBase=S.difficulty==='extreme'?4:S.difficulty==='hard'?5:6;var num=numBase+Math.floor(Math.random()*2);
   for(var j=0;j<num;j++){
     var t=CTPL[pool[j]];
     var qty=Math.round(t.minDWT*(0.85+Math.random()*.3)/5)*5;
@@ -657,8 +624,9 @@ function genCargoes(){
 function rollEvent(){
   // 難易度に応じてイベントプールを調整
   var pool = EVENTS.filter(function(e){
-    if(S.difficulty==='easy') return e.mag!=='big' || e.type==='up'; // easy: 大暴落なし
-    if(S.difficulty==='hard') return e.mag!=='big' || e.type==='down'; // hard: 大急騰なし
+    // ふつう: すべて / むずかしい: 大急騰なし / 激むず: 大急騰なし＋通常上昇も控えめ
+    if(S.difficulty==='hard')    return !(e.mag==='big' && e.type==='up');
+    if(S.difficulty==='extreme') return e.type==='down' || e.type==='none'; // 下落のみ
     return true; // normal: すべて
   });
   var ev=pool[Math.floor(Math.random()*pool.length)];
@@ -767,26 +735,21 @@ startGame:function(){
   document.getElementById('screen-game').style.display='';
   // 難易度に応じてカーゴ数調整
   genCargoes();genMktShips();rollWeather();renderAll();
-  var diffLabel={'easy':'かんたん','normal':'ふつう','hard':'むずかしい'}[S.difficulty];
+  var diffLabel={'normal':'ふつう','hard':'むずかしい','extreme':'激むず'}[S.difficulty]||'ふつう';
   addLog('R1開始 [難易度:'+diffLabel+'] — まず用船市場で船をチャーターしよう！');
   startTimer();spawnUrgentOffer();
 },
 setDiff:function(d){
   S.difficulty=d;
-  var ids=['easy','normal','hard'];
-  var colors={'easy':['#1D9E75','#E1F5EE','#085041'],'normal':['#185FA5','#E6F1FB','#0C447C'],'hard':['#E24B4A','#FCEBEB','#791F1F']};
+  var ids=['normal','hard','extreme'];
+  var colors={'normal':['#185FA5','#E6F1FB'],'hard':['#E24B4A','#FCEBEB'],'extreme':['#412402','#FAEEDA']};
   ids.forEach(function(id){
-    var el=document.getElementById('diff-'+id);
+    var el=document.getElementById('diff-'+id);if(!el)return;
     var active=id===d;
-    var c=colors[id];
-    el.style.border=active?'2.5px solid '+c[0]:'1.5px solid rgba(0,0,0,.12)';
-    el.style.background=active?c[1]:'#f1efe8';
-    el.style.transform=active?'scale(1.03)':'scale(1)';
+    el.style.border=active?'2.5px solid '+colors[id][0]:'1.5px solid rgba(0,0,0,.12)';
+    el.style.background=active?colors[id][1]:'#f1efe8';
+    el.style.transform=active?'scale(1.04)':'scale(1)';
   });
-  var descs={'easy':'「かんたん」— 競合の動きが遅く、カーゴも多め。大暴落イベントなし。初心者向け',
-             'normal':'「ふつう」— 標準設定。すべてのイベントが発生。バランス型',
-             'hard':'「むずかしい」— 競合が序盤から動く。カーゴ少なめ。大急騰イベントなし。上級者向け'};
-  document.getElementById('diff-desc').textContent=descs[d];
 },
 showTab:function(tab){S.currentTab=tab;['charter','myships','cargo','neg','cargoassign','rules'].forEach(function(t){var p=document.getElementById('pane-'+t);if(p)p.style.display=tab===t?'':'none';var b=document.getElementById('tab-'+t);if(b)b.className='tab-btn'+(tab===t?' active':'');});if(tab==='neg')refreshNegPanel();if(tab==='cargoassign')refreshCargoPanel();},
 pickMktShip:function(id){var s=getMkt(id);if(!s||s.booked||s.rivalBooked)return;S.selMktShip=(S.selMktShip===id)?null:id;if(S.selMktShip){S.hireOffer=Math.round(s.ownerRate*0.95/500)*500;S.negPeriod=1;}renderAll();if(S.selMktShip)this.showTab('neg');},
