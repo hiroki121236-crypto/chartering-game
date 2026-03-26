@@ -413,96 +413,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1
 
 <script>
 
-// ===== 天候イベント =====
-var WEATHER_EVENTS=[
-  {title:'台風接近',desc:'アジア主要港が一時閉鎖。laycan+5日延長。',region:'asia',dayAdd:5,emoji:'🌀'},
-  {title:'ハリケーン',desc:'メキシコ湾岸港が閉鎖。南米〜北米航路に影響。',region:'america',dayAdd:4,emoji:'🌪️'},
-  {title:'濃霧・港湾制限',desc:'欧州北部が濃霧で通航制限。laycan+3日延長。',region:'europe',dayAdd:3,emoji:'🌫️'},
-  {title:'豪州山火事',desc:'石炭産地で操業停止。一部カーゴが競合にブロック。',region:'australia',dayAdd:0,block:true,emoji:'🔥'},
-  {title:'大洪水',desc:'インド洋岸港が浸水。laycan+4日延長。',region:'india',dayAdd:4,emoji:'🌊'},
-];
-var REGION_PORTS={asia:['東京','大阪','釜山','上海','広州','シンガポール','台中'],america:['ニューオーリンズ','ヒューストン','バンクーバー','ロングビーチ','サントス','パラナグア','ロサリオ','プエルトボリバル'],europe:['ロッテルダム','アントワープ','ハンブルク','敖徳薩'],australia:['ニューカッスル','グラッドストーン','ポートヘッドランド'],india:['ムンバイ','チェンナイ','カラチ','ダーバン','リチャーズベイ']};
-var S_weather={active:false,ev:null};
-function rollWeather(){
-  S_weather.active=false;S_weather.ev=null;
-  if(Math.random()>0.28)return;
-  var ev=WEATHER_EVENTS[Math.floor(Math.random()*WEATHER_EVENTS.length)];
-  S_weather.active=true;S_weather.ev=ev;
-  var ports=REGION_PORTS[ev.region]||[];
-  var affected=0;
-  for(var i=0;i<S.cargoes.length;i++){
-    var cg=S.cargoes[i];if(cg.taken||cg.rivalTaken)continue;
-    var hit=ports.indexOf(cg.from)>=0||ports.indexOf(cg.to)>=0;
-    if(!hit)continue;affected++;
-    if(ev.dayAdd>0){cg.laycanStart=addDays(cg.laycanStart,ev.dayAdd);cg.laycanEnd=addDays(cg.laycanEnd,ev.dayAdd);}
-    if(ev.block&&Math.random()<0.4)cg.rivalTaken=true;
-  }
-  addLog(ev.emoji+' 天候: '+ev.title+' — '+ev.desc+(affected?' ('+affected+'件影響)':''));
-}
-function renderWeatherBanner(){
-  var el=document.getElementById('weather-area');if(!el)return;
-  if(!S_weather.active){el.innerHTML='';return;}
-  var ev=S_weather.ev;
-  var ports=REGION_PORTS[ev.region]||[];
-  el.innerHTML='<div class="weather-banner">'+ev.emoji+' <b>天候影響中: '+ev.title+'</b> — '+ev.desc+' <span style="opacity:.7;font-size:9px">影響港: '+ports.slice(0,4).join('・')+'</span></div>';
-}
-
-// ===== 緊急オファー =====
-var S_urgent={handle:null,closeTimer:null,ship:null};
-function spawnUrgentOffer(){
-  if(S_urgent.handle)clearTimeout(S_urgent.handle);
-  var delay=(60+Math.floor(Math.random()*120))*1000;
-  S_urgent.handle=setTimeout(function(){
-    if(!S.timerActive)return;
-    var avail=S.mktShips.filter(function(s){return !s.booked&&!s.rivalBooked;});
-    if(!avail.length)return;
-    var ship=avail[Math.floor(Math.random()*avail.length)];
-    S_urgent.ship={id:ship.id,name:ship.name,ti:ship.ti,pos:ship.pos,colorIdx:ship.colorIdx,discountRate:Math.round(ship.ownerRate*0.72/500)*500,ownerRate:ship.ownerRate};
-    showUrgentModal();
-  },delay);
-}
-function showUrgentModal(){
-  var ship=S_urgent.ship,t=STYPES[ship.ti],col=COLORS[ship.colorIdx%COLORS.length];
-  document.getElementById('urgent-content').innerHTML=
-    '<div style="display:flex;align-items:center;gap:6px;margin-bottom:.45rem">'+
-    '<div style="width:18px;height:18px;border-radius:3px;background:'+col+';display:flex;align-items:center;justify-content:center;font-size:8px;color:#fff;font-weight:600">#'+ship.id+'</div>'+
-    '<b>'+ship.name+'</b><span style="font-size:10px;color:#888">['+t.label+' '+t.dwt+'k]</span></div>'+
-    '<div style="font-size:11px">現在地: <b>'+ship.pos+'</b></div>'+
-    '<div style="margin-top:.3rem"><span style="text-decoration:line-through;color:#aaa">通常: $'+Math.round(ship.ownerRate/1000)+'K/日</span>'+
-    ' <b style="color:#E24B4A;font-size:15px">$'+Math.round(ship.discountRate/1000)+'K/日</b> <span style="font-size:11px;background:#FCEBEB;color:#791F1F;padding:1px 5px;border-radius:4px">28%OFF</span></div>'+
-    '<div style="font-size:10px;color:#888;margin-top:.25rem">30秒限定。1ラウンド用船。</div>';
-  document.getElementById('urgent-modal').style.display='';
-  var sec=30;
-  document.getElementById('urgent-timer').textContent=sec;
-  if(S_urgent.closeTimer)clearInterval(S_urgent.closeTimer);
-  S_urgent.closeTimer=setInterval(function(){
-    sec--;
-    var el=document.getElementById('urgent-timer');
-    if(el){el.textContent=sec;el.style.color=sec<=10?'#E24B4A':'#BA7517';}
-    if(sec<=0){clearInterval(S_urgent.closeTimer);S_urgent.closeTimer=null;closeUrgentModal();addLog('⚡ 緊急オファー期限切れ: '+S_urgent.ship.name);}
-  },1000);
-}
-function closeUrgentModal(){document.getElementById('urgent-modal').style.display='none';}
-
-// ===== チュートリアル =====
-var TUT_STEPS=[
-  {title:'ゲームの目的',body:'あなたはドライバルク海運の用船担当者です。船をチャーター（借りて）カーゴ（貨物）を運んで利益を最大化しましょう。全6ラウンドで総利益を競います。',tab:null},
-  {title:'用船市場タブ',body:'「用船市場」タブをタップして船の一覧を見てみよう。<br>各船には <b>船型・現在地・用船料（$/日）</b> が表示されています。⚠マーク付きはブローカーが上乗せしている可能性あり。',tab:'charter'},
-  {title:'船を選んで交渉',body:'船をタップ → 「用船交渉」タブへ移動。<br><b>① 用船期間</b>：何ラウンド借りるか<br><b>② 用船料</b>：船主提示額より少し低めに。成約確率が表示されるので参考に！',tab:'neg'},
-  {title:'カーゴを割り当てる',body:'「用船中の船」タブ → 空きスロットをタップ → カーゴ市場でカーゴ選択 → 「カーゴ交渉」で運賃を決める。<br><b>laycan</b>（積み日程）に間に合わない船は積載不可。✓マークで確認できます。',tab:'myships'},
-  {title:'収支の計算方法',body:'利益 ＝ 収入（運賃×積載量）− 用船料（日額×日数）− 燃料費（船型×日数×燃料単価）<br><br>カーゴ交渉画面に採算ラインが表示されます。それ以上の運賃を提示しましょう。',tab:'cargoassign'},
-  {title:'準備完了！',body:'<b>5分タイマー</b>が動いています。3分で競合が動き始める！<br><br>⭐ <b>スペシャルカーゴ</b>：超高単価だがlaycan短い。急いで！<br>🌀 <b>天候イベント</b>：港のlaycanが変わる。カーゴを確認して。<br>⚡ <b>緊急オファー</b>：30秒限定の28%OFF用船。見逃さずに！',tab:null},
-];
-var S_tut={step:0};
-function showTutStep(){
-  var step=TUT_STEPS[S_tut.step];
-  document.getElementById('tut-modal').style.display='';
-  document.getElementById('tut-title').textContent=step.title;
-  document.getElementById('tut-body').innerHTML=step.body;
-  document.getElementById('tut-progress').textContent=(S_tut.step+1)+'/'+TUT_STEPS.length;
-  document.getElementById('tut-next-btn').textContent=S_tut.step===TUT_STEPS.length-1?'ゲーム開始！':'次へ →';
-  if(step.tab)APP.showTab(step.tab);
-}
 
 var APP=(function(){
 var PORTS={"東京":{x:730,y:68},"大阪":{x:720,y:78},"釜山":{x:710,y:72},"上海":{x:697,y:90},"広州":{x:678,y:106},"シンガポール":{x:655,y:186},"台中":{x:706,y:98},"ポートヘッドランド":{x:700,y:276},"ニューカッスル":{x:778,y:310},"グラッドストーン":{x:788,y:280},"ムンバイ":{x:505,y:104},"チェンナイ":{x:533,y:122},"カラチ":{x:488,y:92},"ダーバン":{x:338,y:234},"リチャーズベイ":{x:344,y:224},"サントス":{x:126,y:290},"パラナグア":{x:122,y:282},"ロサリオ":{x:114,y:272},"ニューオーリンズ":{x:80,y:178},"ヒューストン":{x:72,y:184},"ロッテルダム":{x:350,y:32},"アントワープ":{x:342,y:40},"ハンブルク":{x:358,y:22},"バンクーバー":{x:24,y:44},"ロングビーチ":{x:22,y:96},"ウスチルガ":{x:562,y:18},"敖徳薩":{x:394,y:26},"ノボロシースク":{x:404,y:28},"プエルトボリバル":{x:114,y:218},"カサブランカ":{x:258,y:84}};
@@ -786,6 +696,97 @@ function renderMap(){var rl='',si='',pd='',up={};var sc=S.selCargo?getCargo(S.se
 function refreshNegPanel(){var msgEl=document.getElementById('np-msg'),bodyEl=document.getElementById('np-body');function hide(m,err){msgEl.style.display='';msgEl.textContent=m;msgEl.style.color=err?'#E24B4A':'#888';bodyEl.style.display='none';}if(!S.selMktShip){hide('用船市場で船を選んでください',false);return;}var ship=getMkt(S.selMktShip);if(!ship){hide('',false);return;}if(ship.booked||ship.rivalBooked){hide('この船は既に用船されています',true);return;}msgEl.style.display='none';bodyEl.style.display='';var col=COLORS[ship.colorIdx%COLORS.length],t=STYPES[ship.ti];document.getElementById('np-info').innerHTML='<div style="display:flex;align-items:center;gap:5px;margin-bottom:.22rem"><div style="width:16px;height:16px;border-radius:3px;background:'+col+';display:flex;align-items:center;justify-content:center;font-size:8px;color:#fff;font-weight:600;flex-shrink:0">'+lbl(ship)+'</div><b style="font-size:11px">'+ship.name+'</b><span style="font-size:9px;color:#854F0B">['+t.label+' '+t.dwt+'k]</span>'+(ship.isBroker?'<span class="broker-badge">⚠ブローカー</span>':'')+'</div><div style="font-size:9px;color:#888;margin-bottom:.1rem">現在地: '+ship.pos+'</div>';document.getElementById('period-disp').textContent=S.negPeriod+'R ('+S.negPeriod+'ヶ月)';document.getElementById('np-period-note').textContent='期間中用船料合計 ≒ $'+Math.round(S.hireOffer*S.negPeriod*30/1000)+'K';document.getElementById('np-owner-rate').innerHTML='$'+Math.round(ship.ownerRate/1000)+'K/日';document.getElementById('np-broker-warn').innerHTML=ship.isBroker?'<div style="font-size:9px;color:#E24B4A;margin-top:2px">※真の船主提示は $'+Math.round(ship.trueOwnerRate/1000)+'K/日 かも</div>':'';var hi=document.getElementById('hire-input');if(document.activeElement!==hi)hi.value=Math.round(S.hireOffer/1000);var hp=hireProb(S.hireOffer,ship.ownerRate),hl=probLbl(hp);document.getElementById('np-hire-status').innerHTML='<span style="padding:2px 6px;border-radius:5px;font-size:10px;background:'+hl.bg+';color:'+hl.c+'">'+hl.t+'</span>';document.getElementById('np-total-cost').textContent='用船料合計: $'+Math.round(S.hireOffer*S.negPeriod*30/1000)+'K ('+S.negPeriod+'R分)';document.getElementById('np-longterm-note').textContent=S.negPeriod>1?'長期用船メリット: 市況上昇しても用船料が'+S.negPeriod+'Rの間固定される':'期間1R: 毎ラウンド市場水準に左右される';}
 function refreshCargoPanel(){var msgEl=document.getElementById('ca-msg'),bodyEl=document.getElementById('ca-body');function hide(m,err){msgEl.style.display='';msgEl.textContent=m;msgEl.style.color=err?'#E24B4A':'#888';bodyEl.style.display='none';}if(!S.selActiveShip||!S.selCargo){hide(S.selActiveShip?'カーゴ市場でカーゴを選んでください':'用船中の船のスロットをタップしてください',false);return;}var ac=getAC(S.selActiveShip),cargo=getCargo(S.selCargo);if(!ac||!cargo){hide('',false);return;}if(ac.status==='delivering'){hide('この船は現在運送中です。揚げ地到着後に次のカーゴを積めます',true);return;}var t=STYPES[ac.ti];if(t.dwt<cargo.minDWT){hide('DWT不足 — 必要:'+cargo.minDWT+'k / この船:'+t.dwt+'k',true);return;}if(cargo.taken||cargo.rivalTaken){hide('このカーゴは既に成約済みです',true);return;}msgEl.style.display='none';bodyEl.style.display='';var sc=schedChk(ac.pos,ac.ti,cargo);var tot=sc.bd+cargo.days;var voyNm=sc.nm+(cargo.nm||cargo.days*STYPES[ac.ti].spd*24);var fuel=fuelVoy(ac.ti,voyNm);var hireCostV=Math.round(ac.hirePerDay*tot);var portFee=20000;var rev=Math.round(S.caFreightOffer*cargo.qty*1000),margin=rev-hireCostV-fuel-portFee;var minFr=Math.ceil((hireCostV+fuel+portFee)/(cargo.qty*1000));var fp=freightProb(S.caFreightOffer,cargo.rate),fl=probLbl(fp);var col=COLORS[ac.colorIdx%COLORS.length];document.getElementById('ca-info').innerHTML='<div style="display:flex;align-items:center;gap:5px;margin-bottom:.2rem"><div style="width:16px;height:16px;border-radius:3px;background:'+col+';display:flex;align-items:center;justify-content:center;font-size:8px;color:#fff;font-weight:600;flex-shrink:0">'+lbl(ac)+'</div><b style="font-size:11px">'+ac.name+'</b> × <b>'+cargo.cargo+'</b></div><div style="font-size:9px;color:#888">'+cargo.from+'→'+cargo.to+' | '+cargo.qty+'k t | バラスト '+sc.bd+'日 + 運航'+cargo.days+'日 = 計'+tot+'日</div>';document.getElementById('ca-schedule').innerHTML='<span style="color:'+(sc.ok?'#1D9E75':'#E24B4A')+'">'+(sc.ok?'✓ ':'✗ ')+'到着予定 '+fmtD(sc.arr)+' | laycan '+fmtD(cargo.laycanStart)+'〜'+fmtD(cargo.laycanEnd)+'</span>';document.getElementById('ca-mkt-rate').innerHTML='$'+cargo.rate+'/t';var fi=document.getElementById('ca-freight-input');if(document.activeElement!==fi)fi.value=S.caFreightOffer;document.getElementById('ca-freight-status').innerHTML='<span style="padding:2px 6px;border-radius:5px;font-size:10px;background:'+fl.bg+';color:'+fl.c+'">'+fl.t+'</span>';document.getElementById('ca-calc').innerHTML='<div style="font-size:9px;color:#888;margin-bottom:.18rem">採算ライン $'+minFr+'/t | 用船料コスト $'+Math.round(hireCostV/1000)+'K | 燃料 $'+Math.round(fuel/1000)+'K</div><div class="calc-box"><div class="calc-item"><div class="cl">収入</div><div class="cv" style="color:#185FA5">$'+Math.round(rev/1000)+'K</div></div><div style="color:#888">−</div><div class="calc-item"><div class="cl">用船料</div><div class="cv" style="color:#E24B4A">$'+Math.round(hireCostV/1000)+'K</div></div><div style="color:#888">−</div><div class="calc-item"><div class="cl">燃料</div><div class="cv" style="color:#E24B4A">$'+Math.round(fuel/1000)+'K</div></div><div style="color:#888">=</div><div class="calc-item"><div class="cl">利益</div><div class="cv" style="color:'+(margin>=0?'#1D9E75':'#E24B4A')+'">$'+Math.round(margin/1000)+'K</div></div></div>';}
 function renderAll(){renderEvent();renderWeatherBanner();renderMetrics();renderCharter();renderMyShips();renderCargoes();renderMap();}
+// ===== 天候イベント =====
+var WEATHER_EVENTS=[
+  {title:'台風接近',desc:'アジア主要港が一時閉鎖。laycan+5日延長。',region:'asia',dayAdd:5,emoji:'🌀'},
+  {title:'ハリケーン',desc:'メキシコ湾岸港が閉鎖。南米〜北米航路に影響。',region:'america',dayAdd:4,emoji:'🌪️'},
+  {title:'濃霧・港湾制限',desc:'欧州北部が濃霧で通航制限。laycan+3日延長。',region:'europe',dayAdd:3,emoji:'🌫️'},
+  {title:'豪州山火事',desc:'石炭産地で操業停止。一部カーゴが競合にブロック。',region:'australia',dayAdd:0,block:true,emoji:'🔥'},
+  {title:'大洪水',desc:'インド洋岸港が浸水。laycan+4日延長。',region:'india',dayAdd:4,emoji:'🌊'},
+];
+var REGION_PORTS={asia:['東京','大阪','釜山','上海','広州','シンガポール','台中'],america:['ニューオーリンズ','ヒューストン','バンクーバー','ロングビーチ','サントス','パラナグア','ロサリオ','プエルトボリバル'],europe:['ロッテルダム','アントワープ','ハンブルク','敖徳薩'],australia:['ニューカッスル','グラッドストーン','ポートヘッドランド'],india:['ムンバイ','チェンナイ','カラチ','ダーバン','リチャーズベイ']};
+var S_weather={active:false,ev:null};
+function rollWeather(){
+  S_weather.active=false;S_weather.ev=null;
+  if(Math.random()>0.28)return;
+  var ev=WEATHER_EVENTS[Math.floor(Math.random()*WEATHER_EVENTS.length)];
+  S_weather.active=true;S_weather.ev=ev;
+  var ports=REGION_PORTS[ev.region]||[];
+  var affected=0;
+  for(var i=0;i<S.cargoes.length;i++){
+    var cg=S.cargoes[i];if(cg.taken||cg.rivalTaken)continue;
+    var hit=ports.indexOf(cg.from)>=0||ports.indexOf(cg.to)>=0;
+    if(!hit)continue;affected++;
+    if(ev.dayAdd>0){cg.laycanStart=addDays(cg.laycanStart,ev.dayAdd);cg.laycanEnd=addDays(cg.laycanEnd,ev.dayAdd);}
+    if(ev.block&&Math.random()<0.4)cg.rivalTaken=true;
+  }
+  addLog(ev.emoji+' 天候: '+ev.title+' — '+ev.desc+(affected?' ('+affected+'件影響)':''));
+}
+function renderWeatherBanner(){
+  var el=document.getElementById('weather-area');if(!el)return;
+  if(!S_weather.active){el.innerHTML='';return;}
+  var ev=S_weather.ev;
+  var ports=REGION_PORTS[ev.region]||[];
+  el.innerHTML='<div class="weather-banner">'+ev.emoji+' <b>天候影響中: '+ev.title+'</b> — '+ev.desc+' <span style="opacity:.7;font-size:9px">影響港: '+ports.slice(0,4).join('・')+'</span></div>';
+}
+
+// ===== 緊急オファー =====
+var S_urgent={handle:null,closeTimer:null,ship:null};
+function spawnUrgentOffer(){
+  if(S_urgent.handle)clearTimeout(S_urgent.handle);
+  var delay=(60+Math.floor(Math.random()*120))*1000;
+  S_urgent.handle=setTimeout(function(){
+    if(!S.timerActive)return;
+    var avail=S.mktShips.filter(function(s){return !s.booked&&!s.rivalBooked;});
+    if(!avail.length)return;
+    var ship=avail[Math.floor(Math.random()*avail.length)];
+    S_urgent.ship={id:ship.id,name:ship.name,ti:ship.ti,pos:ship.pos,colorIdx:ship.colorIdx,discountRate:Math.round(ship.ownerRate*0.72/500)*500,ownerRate:ship.ownerRate};
+    showUrgentModal();
+  },delay);
+}
+function showUrgentModal(){
+  var ship=S_urgent.ship,t=STYPES[ship.ti],col=COLORS[ship.colorIdx%COLORS.length];
+  document.getElementById('urgent-content').innerHTML=
+    '<div style="display:flex;align-items:center;gap:6px;margin-bottom:.45rem">'+
+    '<div style="width:18px;height:18px;border-radius:3px;background:'+col+';display:flex;align-items:center;justify-content:center;font-size:8px;color:#fff;font-weight:600">#'+ship.id+'</div>'+
+    '<b>'+ship.name+'</b><span style="font-size:10px;color:#888">['+t.label+' '+t.dwt+'k]</span></div>'+
+    '<div style="font-size:11px">現在地: <b>'+ship.pos+'</b></div>'+
+    '<div style="margin-top:.3rem"><span style="text-decoration:line-through;color:#aaa">通常: $'+Math.round(ship.ownerRate/1000)+'K/日</span>'+
+    ' <b style="color:#E24B4A;font-size:15px">$'+Math.round(ship.discountRate/1000)+'K/日</b> <span style="font-size:11px;background:#FCEBEB;color:#791F1F;padding:1px 5px;border-radius:4px">28%OFF</span></div>'+
+    '<div style="font-size:10px;color:#888;margin-top:.25rem">30秒限定。1ラウンド用船。</div>';
+  document.getElementById('urgent-modal').style.display='';
+  var sec=30;
+  document.getElementById('urgent-timer').textContent=sec;
+  if(S_urgent.closeTimer)clearInterval(S_urgent.closeTimer);
+  S_urgent.closeTimer=setInterval(function(){
+    sec--;
+    var el=document.getElementById('urgent-timer');
+    if(el){el.textContent=sec;el.style.color=sec<=10?'#E24B4A':'#BA7517';}
+    if(sec<=0){clearInterval(S_urgent.closeTimer);S_urgent.closeTimer=null;closeUrgentModal();addLog('⚡ 緊急オファー期限切れ: '+S_urgent.ship.name);}
+  },1000);
+}
+function closeUrgentModal(){document.getElementById('urgent-modal').style.display='none';}
+
+// ===== チュートリアル =====
+var TUT_STEPS=[
+  {title:'ゲームの目的',body:'あなたはドライバルク海運の用船担当者です。船をチャーター（借りて）カーゴ（貨物）を運んで利益を最大化しましょう。全6ラウンドで総利益を競います。',tab:null},
+  {title:'用船市場タブ',body:'「用船市場」タブをタップして船の一覧を見てみよう。<br>各船には <b>船型・現在地・用船料（$/日）</b> が表示されています。⚠マーク付きはブローカーが上乗せしている可能性あり。',tab:'charter'},
+  {title:'船を選んで交渉',body:'船をタップ → 「用船交渉」タブへ移動。<br><b>① 用船期間</b>：何ラウンド借りるか<br><b>② 用船料</b>：船主提示額より少し低めに。成約確率が表示されるので参考に！',tab:'neg'},
+  {title:'カーゴを割り当てる',body:'「用船中の船」タブ → 空きスロットをタップ → カーゴ市場でカーゴ選択 → 「カーゴ交渉」で運賃を決める。<br><b>laycan</b>（積み日程）に間に合わない船は積載不可。✓マークで確認できます。',tab:'myships'},
+  {title:'収支の計算方法',body:'利益 ＝ 収入（運賃×積載量）− 用船料（日額×日数）− 燃料費（船型×日数×燃料単価）<br><br>カーゴ交渉画面に採算ラインが表示されます。それ以上の運賃を提示しましょう。',tab:'cargoassign'},
+  {title:'準備完了！',body:'<b>5分タイマー</b>が動いています。3分で競合が動き始める！<br><br>⭐ <b>スペシャルカーゴ</b>：超高単価だがlaycan短い。急いで！<br>🌀 <b>天候イベント</b>：港のlaycanが変わる。カーゴを確認して。<br>⚡ <b>緊急オファー</b>：30秒限定の28%OFF用船。見逃さずに！',tab:null},
+];
+var S_tut={step:0};
+function showTutStep(){
+  var step=TUT_STEPS[S_tut.step];
+  document.getElementById('tut-modal').style.display='';
+  document.getElementById('tut-title').textContent=step.title;
+  document.getElementById('tut-body').innerHTML=step.body;
+  document.getElementById('tut-progress').textContent=(S_tut.step+1)+'/'+TUT_STEPS.length;
+  document.getElementById('tut-next-btn').textContent=S_tut.step===TUT_STEPS.length-1?'ゲーム開始！':'次へ →';
+  if(step.tab)APP.showTab(step.tab);
+}
+
 return{
 startTutorial:function(){
   document.getElementById('screen-start').style.display='none';
@@ -822,7 +823,7 @@ goHome:function(){
   S.timerActive=false;
   if(S_urgent.handle){clearTimeout(S_urgent.handle);}if(S_urgent.closeTimer){clearInterval(S_urgent.closeTimer);closeUrgentModal();}if(!confirm('ホーム画面に戻りますか？\n（ゲームの進行状況はリセットされます）'))return;
   // 状態リセット
-  S.round=1;S.maxRound=6;S.profit=0;S.bdi=1200;S.cash=50e6;S.deals=0;S.fuelPrice=600;
+  S.round=1;S.maxRound=6;S.profit=0;S.bdi=1100;S.cash=50e6;S.deals=0;S.fuelPrice=550;
   S.curDate=new Date(BASE_DATE);S.mktShips=[];S.nextId=1;S.nextCol=0;
   S.activeCharters=[];S.cargoes=[];S.selMktShip=null;S.negPeriod=1;S.hireOffer=0;
   S.selActiveShip=null;S.selCargo=null;S.caFreightOffer=0;S.logs=[];S.lastEvent=null;
